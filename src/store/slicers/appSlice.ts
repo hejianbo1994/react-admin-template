@@ -2,15 +2,17 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 
 export interface AppState {
-  theme: string
+  theme: 'light' | 'dark' // dark,light
   collapsed: boolean // 菜单收纳状态, 用于垂直布局
   menuMode: 'horizontal' | 'vertical' // 菜单模式, 用于水平布局
 }
 
 const initialState: AppState = {
   collapsed: false,
-  theme: 'dark',
-  menuMode: 'horizontal'
+  theme: window.matchMedia('(prefers-color-scheme: light)').matches
+    ? 'light'
+    : 'dark',
+  menuMode: 'vertical'
 }
 
 export const appSlice = createSlice({

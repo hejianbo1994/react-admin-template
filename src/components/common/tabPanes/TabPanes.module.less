@@ -1,8 +1,19 @@
 .tabs {
-  padding: 0 15px;
+  // padding: 0 15px;
   background: @component-background;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.12);
-  height: 100%;
+  height: calc(100vh - 64px);
   overflow-y: auto;
-  padding-top: 10px;
+  // padding-top: 10px;
 }
+
+:global(.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab) {
+  margin-right: 0;
+}
+
+:global(.history-tabs .ant-tabs-content) {
+  height: calc(100vh - 116px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+

@@ -6,25 +6,26 @@ export const userRes: UserInfo[] = [
     username: 'admin',
     password: '123456',
     token: 'asdfghjkl',
+    phone: '',
     permission: [
       {
-        code: 'user:list:view',
+        code: 'user:list',
         name: '查看用户列表'
       },
       {
-        code: 'user:list:add',
+        code: 'user:add',
         name: '新增用户列表'
       },
       {
-        code: 'user:list:edit',
+        code: 'user:edit',
         name: '编辑用户列表'
       },
       {
-        code: 'role:list:view',
+        code: 'role:list',
         name: '查看角色列表'
       },
       {
-        code: 'auth:test:view',
+        code: 'auth:test',
         name: '查看权限测试页'
       }
     ]

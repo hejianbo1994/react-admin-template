@@ -28,20 +28,23 @@ const FormView: FC = () => {
       name: 'Jacob Jørgensen',
       gender: 'male',
       avatar: 'https://randomuser.me/api/portraits/thumb/men/84.jpg',
-      content: 'jacob.jorgensen@example.com',
+      content: '<p>rerer34343</p>',
       status: Math.random() > 0.5
     })
   }, [id, resetFields, setFieldsValue])
 
-  const handleSubmit = () => {
-    setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
-      message.success('修改成功')
-      const returnUrl = '/user/list'
-      closeTabAction(history, returnUrl)
-    }, 1000)
+  const handleSubmit = (e) => {
+    console.log(form.getFieldsValue().content.toRAW())
+    // setLoading(true)
+    // setTimeout(() => {
+    // setLoading(false)
+    // message.success('修改成功')
+    // const returnUrl = '/user/list'
+    // closeTabAction(history, returnUrl)
+    // }, 1000)
   }
+
+  const onChange = (value) => {}
 
   return (
     <Spin spinning={loading}>
@@ -101,7 +104,7 @@ const FormView: FC = () => {
             }
           ]}
         >
-          <Editor />
+          <Editor onChange={onChange} />
         </Form.Item>
         <Form.Item label="状态" name="status" valuePropName="checked">
           <Switch checkedChildren="开启" unCheckedChildren="禁用" />

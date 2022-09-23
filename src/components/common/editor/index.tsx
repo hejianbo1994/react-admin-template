@@ -6,15 +6,15 @@ import $axios from '@/utils/axios'
 import aliOss from './ali-oss'
 
 interface Props {
-  uploadType?: string;
-  value?: string;
-  onChange?: () => void;
+  value?: string
+  onChange?: (value) => void
 }
 
 const Editor: FC<Props> = (props) => {
-  const { value, onChange, uploadType } = props
+  const { value, onChange } = props
 
   const uploadFn = (param: CommonObjectType): void => {
+    console.log(param, 'uploadTypeuploadType')
     // 上传中
     const progressFn = (p: number) => {
       // 上传进度发生变化时调用param.progress
@@ -46,17 +46,17 @@ const Editor: FC<Props> = (props) => {
     }
 
     // 上传视频到oss
-    if (uploadType === 'video') {
-      aliOss(progressFn, param.file)
-        .then((res: CommonObjectType) => {
-          const video = {
-            path: `https://xxx.oss-accelerate.aliyuncs.com${res.name}`
-          }
-          successFn(video)
-        })
-        .catch(errorFn)
-      return
-    }
+    // if (uploadType === 'video') {
+    //   aliOss(progressFn, param.file)
+    //     .then((res: CommonObjectType) => {
+    //       const video = {
+    //         path: `https://xxx.oss-accelerate.aliyuncs.com${res.name}`
+    //       }
+    //       successFn(video)
+    //     })
+    //     .catch(errorFn)
+    //   return
+    // }
 
     // 上传图片
     const serverURL = '/api/common/upload'
@@ -73,7 +73,7 @@ const Editor: FC<Props> = (props) => {
 
   // 不允许添加尺寸大于10M的文件
   const validateFn = (file: {
-    type: string | string[],
+    type: string | string[]
     size: number
   }): boolean => {
     if (file.type.includes('image') && file.size > 1024 * 1000 * 5) {

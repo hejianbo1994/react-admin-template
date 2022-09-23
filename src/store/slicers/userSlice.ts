@@ -9,6 +9,7 @@ export interface UserState {
 const initialState: UserState = {
   UserInfo: {
     username: '',
+    phone: '',
     displayName: '',
     permission: [],
     token: null,
@@ -22,7 +23,7 @@ export const userSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     setUserInfo: (state, action) => {
-      state.UserInfo = action.payload
+      state.UserInfo = { ...state.UserInfo, ...action.payload }
     }
   }
 })

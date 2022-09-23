@@ -12,11 +12,11 @@ const UserList: FC = () => {
 
   // 添加
   const add = () => {
-    history.push('/user/list/add')
+    history.push('/user/add')
   }
   // 编辑
   const edit = () => {
-    history.push('/user/list/edit?id=666')
+    history.push('/user/edit?id=666')
   }
 
   // 新增按钮
@@ -84,7 +84,7 @@ const UserList: FC = () => {
       align: 'center',
       render: () => (
         <>
-          {isAuthorized('user:list:edit') && (
+          {isAuthorized('user:edit') && (
             <Button className="btn" onClick={edit} size="small">
               编辑
             </Button>

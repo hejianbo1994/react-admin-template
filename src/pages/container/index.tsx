@@ -53,14 +53,9 @@ const Home: FC = () => {
   const history = useHistory()
   const { pathname, search } = useLocation()
 
-  const { token } = userInfo
+  const { token, permission } = userInfo
 
   useEffect(() => {
-    if (!collapsed) {
-      // 已折叠时,不修改为折叠. 小屏幕依然根据窗体宽度自动折叠.
-      dispatch(setCollapsed(document.body.clientWidth <= 1366))
-    }
-
     // 未登录
     if (!token && pathname !== '/login') {
       history.replace({ pathname: '/login' })
@@ -71,7 +66,6 @@ const Home: FC = () => {
     // 新tab已存在或不需要新建tab，return
     if (pathname === pathRef.current || noNewTab.includes(pathname)) {
       setTabActiveKey(tabKey)
-      return
     }
 
     // 检查权限，比如直接从地址栏输入的，提示无权限
@@ -107,7 +101,7 @@ const Home: FC = () => {
       path: newPath
     })
     setTabActiveKey(tabKey)
-  }, [history, pathname, search, token, dispatch, collapsed])
+  }, [history, pathname, search, token, dispatch, permission, collapsed])
 
   return (
     <Layout
@@ -115,19 +109,8 @@ const Home: FC = () => {
       onContextMenu={(e) => e.preventDefault()}
       style={{ display: pathname.includes('/login') ? 'none' : 'flex' }}
     >
-      {/* <Layout.Sider>
-            <Logo>
-            <Menu>
-              {renderMenuMap(menus)} 通过.content & collapsed 切换 layout 布局
-            </Menu>
-      */}
-      <MenuView menuMode={menuMode} />
-      <Layout
-        className={classNames(styles.content, {
-          [styles.collapsed]: collapsed && menuMode === 'vertical',
-          [styles.horizontal]: menuMode !== 'vertical'
-        })}
-      >
+      <MenuView />
+      <Layout className={styles.content}>
         <Header />
         <Layout.Content>
           <TabPanes

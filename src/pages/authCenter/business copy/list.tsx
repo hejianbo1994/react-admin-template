@@ -7,10 +7,10 @@ import { useAppDispatch, useAppSelector } from '@/store/redux-hooks'
 
 const { Text } = Typography
 
-const AuthTest: FC = () => {
+const Business: FC = () => {
   const userInfo = useAppSelector(selectUserInfo)
   const history = useHistory()
-  const { username, permission } = userInfo
+  const { username, permission, phone } = userInfo
   const dispatch = useAppDispatch()
 
   // 切换权限
@@ -22,37 +22,41 @@ const AuthTest: FC = () => {
         permission.length === 5
           ? [
               {
-                code: 'user:list:view',
+                code: 'user:list',
                 name: '查看用户列表'
               },
               {
-                code: 'user:list:edit',
-                name: '编辑用户列表'
+                code: 'user:edit',
+                name: '编辑用户'
               },
               {
-                code: 'auth:test:view',
+                code: 'auth:test',
                 name: '查看权限测试页'
+              },
+              {
+                code: 'setting:accountSetting',
+                name: '查看账户设置'
               }
             ]
           : [
               {
-                code: 'user:list:view',
+                code: 'user:list',
                 name: '查看用户列表'
               },
               {
-                code: 'user:list:add',
-                name: '新增用户列表'
+                code: 'user:add',
+                name: '新增用户'
               },
               {
-                code: 'user:list:edit',
-                name: '编辑用户列表'
+                code: 'user:edit',
+                name: '编辑用户'
               },
               {
-                code: 'role:list:view',
+                code: 'role:list',
                 name: '查看角色列表'
               },
               {
-                code: 'auth:test:view',
+                code: 'auth:test',
                 name: '查看权限测试页'
               }
             ]
@@ -93,4 +97,4 @@ const AuthTest: FC = () => {
   )
 }
 
-export default AuthTest
+export default Business

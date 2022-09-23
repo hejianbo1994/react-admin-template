@@ -7,7 +7,7 @@ module.exports = {
   devServer: overrideDevServer((config) => {
     config.proxy = {
       '/api/': {
-        target: 'http://127.0.0.1:7001/v1',
+        target: 'http://127.0.0.1:3002/',
         changeOrigin: true,
         pathRewrite: { '^/api/': '/' }
       },

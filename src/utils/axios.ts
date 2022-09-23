@@ -2,6 +2,7 @@ import Axios from 'axios'
 import { message } from 'antd'
 import { store } from '@/store'
 import { HashRouter } from 'react-router-dom'
+import { setUserInfo } from '@/store/slicers/userSlice'
 
 interface AxiosConfig {
   timeout: number
@@ -23,10 +24,7 @@ const router: CommonObjectType = new HashRouter({})
 
 // token失效，清除用户信息并返回登录界面
 const clearAll = () => {
-  store.dispatch({
-    type: 'SET_USERINFO',
-    payload: {}
-  })
+  store.dispatch(setUserInfo({}))
   router.history.replace({ pathname: '/login' })
 }
 
@@ -34,7 +32,7 @@ const clearAll = () => {
 axios.interceptors.request.use(
   (req) => {
     const { token = '' } = store.getState().user.UserInfo || {}
-    req.headers.token = token
+    req.headers.Authorization = `Bearer ${token}`
     return req
   },
   (err) => {
@@ -47,28 +45,16 @@ axios.interceptors.response.use(
   (response): Promise<any> => {
     // todo 应考虑在全局统一化响应数据格式.如果没有,则应移除这个拦截器
     const { data } = response
-    if (data.results?.length) {
-      return Promise.resolve({
-        rows: data.results,
-        total: data.results.length
-      })
-    }
-    if (data) {
-      return Promise.resolve(data)
-    }
-    return Promise.reject(response)
+    return Promise.resolve(data.data)
   },
   (err) => {
-    try {
-      if (JSON.stringify(err).includes('403')) {
-        clearAll()
-      }
-    } catch (error) {
+    if (err.response.status === 401) {
+      // token失效
       clearAll()
     }
     message.destroy()
-    message.error('请求失败')
-    return Promise.reject(err)
+    message.error(err.response.data.message)
+    return Promise.reject(err.response)
   }
 )
 

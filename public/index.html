@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh">
 <head>
   <meta charset="utf-8"/>
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="theme-color" content="#000000"/>
   <meta data-n-head="ssr" name="renderer" content="webkit">
   <meta data-n-head="ssr" http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="description" content="React-Antd多页签模板管理后台"/>
@@ -24,7 +22,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-  <title>React-Antd多页签模板管理后台</title>
+  <title>云筑空间管理后台</title>
 </head>
 
 <body>
@@ -33,27 +31,40 @@
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <div id="root">
   <style>
-    body, html {
-      background-color: #222f3e;
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+      html {
+        background-color: rgb(245, 245, 245);
+      }
+
+      .app-loading .app-loading-title {
+        color: rgb(0 0 0 0.8);
+      }
+
+      ::-webkit-scrollbar-thumb {
+          /* background: rgba(0, 0, 0, 0.2); */
+          background: rgba(111, 111, 111, 0.2) !important;
+      }
     }
 
-    html[data-theme='dark'] {
-      background-color: #222f3e;
-    }
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
 
-    html[data-theme='dark'] .app-loading .app-loading-title {
-      color: rgb(255 255 255 / 85%);
+      html {
+        background-color: rgb(0, 0, 0);
+      }
+      .app-loading .app-loading-title {
+        color: rgb(245 245 245 0.8);
+      }
     }
 
     .app-loading {
       display: flex;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      /*background-color: #f4f7f9;*/
-      background-color: #222f3e;
     }
 
     .app-loading .app-loading-wrap {
@@ -77,9 +88,8 @@
     .app-loading .app-loading-title {
       display: flex;
       margin-top: 30px;
-      font-size: 30px;
-      /*color: rgb(0 0 0 / 85%);*/
-      color: rgb(222 222 222 / 85%);
+      font-size: 28px;
+      font-weight: 300;
       justify-content: center;
       align-items: center;
     }
@@ -163,25 +173,54 @@
       }
     }
   </style>
-  <div class="app-loading">
+  <!-- <div class="app-loading">
     <div class="app-loading-wrap">
       <img src="logo.png" class="app-loading-logo" alt="Logo"/>
       <div class="app-loading-dots">
         <span class="dot dot-spin"><i></i><i></i><i></i><i></i></span>
       </div>
-      <div class="app-loading-title">敏捷开发平台3.0</div>
+      <div class="app-loading-title">云筑空间</div>
+    </div>
+  </div> -->
+  <div class="app-loading">
+    <div class="app-loading-wrap">
+      <div class="app-loading-dots">
+        <span class="dot dot-spin"><i></i><i></i><i></i><i></i></span>
+      </div>
     </div>
   </div>
 </div>
 <script>
-  // 切换为当前主题. 挂载 style节点,预定义的 less:color(被 less.min.js 监听处理为普通css)
-  const themeStyle = localStorage.getItem('themeStyle')
-  if (themeStyle) {
-    const styles = document.createElement('style')
-    styles.id = 'less:color'
-    styles.innerText = themeStyle
-    document.body.appendChild(styles)
+  const themeMedia = window.matchMedia("(prefers-color-scheme: light)");
+  const lightMedia = function(){
+    const script = document.createElement('script')
+    script.id = 'themeJs'
+    script.src = '/less.min.js'
+    document.body.appendChild(script)
   }
+  const darkMedia = function(){
+    const themeJs = document.getElementById('themeJs')
+    const themeStyle = document.getElementById('less:color')
+    if (themeJs) themeJs.remove()
+    if (themeStyle) themeStyle.remove()
+  }
+  if(themeMedia.matches){
+    console.log('light')
+    lightMedia()
+  }else{
+    console.log('dark')
+    darkMedia()
+  }
+  themeMedia.addEventListener('change',e => {
+    if (e.matches) {
+      console.log('light')
+      lightMedia()
+    } else {
+      console.log('dark')
+      darkMedia()
+    }
+  });
+
 </script>
 <!--
     This HTML file is a template.

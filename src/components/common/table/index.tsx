@@ -111,6 +111,7 @@ const MyTable: FC<TableProps> = forwardRef(
 
     // 执行搜索操作
     const handleSearch = (val: object): void => {
+      console.log(val, 'val')
       setSearchParams(val)
       setTableParams({ ...tableParams, ...val, pageNum: 1 })
     }
@@ -251,7 +252,7 @@ MyTable.defaultProps = {
   searchConfigList: [],
   ref: null,
   extraProps: {},
-  rowKey: 'id',
+  rowKey: '_id',
   rowClassName: '',
   small: false,
   showHeader: true,

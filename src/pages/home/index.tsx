@@ -104,7 +104,7 @@ const Home: FC = () => {
   }
 
   return (
-    <div className="home" style={{ height: '100vh', padding: 20 }}>
+    <>
       <Row gutter={16}>
         <Col span={12}>
           <Card>
@@ -160,7 +160,7 @@ const Home: FC = () => {
           </Card>
         </Col>
       </Row>
-    </div>
+    </>
   )
 }
 

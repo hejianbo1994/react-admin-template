@@ -6,8 +6,18 @@ export interface Permission {
 
 export interface UserInfo {
   username: string
+  phone: string
   displayName?: string
   password?: string
   token: string
   permission: Permission[]
+}
+
+export interface BusinessInfo {
+  phone: string
+  displayName?: string
+  password?: string
+  token: string
+  permission: Permission[]
+  admin: string
 }

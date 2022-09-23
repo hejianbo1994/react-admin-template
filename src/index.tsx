@@ -19,20 +19,19 @@ moment.locale('zh-cn')
 
 // https://mswjs.io/docs/getting-started/integrate/browser 浏览器环境MOCK
 
-let appReady = Promise.resolve()
+const appReady = Promise.resolve()
 
 // Enable API mocking only in development
 if (process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line global-require
-  const worker = require('./mocks/browser').default
-  console.log('Mocking API...', worker)
-
-  appReady = worker.start({
-    serviceWorker: {
-      url: '/mockServiceWorker.js' //  static in public/mockServiceWorker.js
-    },
-    onUnhandledRequest: 'bypass'
-  })
+  // const worker = require('./mocks/browser').default
+  // console.log('Mocking API...', worker)
+  // appReady = worker.start({
+  //   serviceWorker: {
+  //     url: '/mockServiceWorker.js' //  static in public/mockServiceWorker.js
+  //   },
+  //   onUnhandledRequest: 'bypass'
+  // })
 }
 
 /**

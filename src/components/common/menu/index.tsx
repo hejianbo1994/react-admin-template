@@ -6,9 +6,10 @@ import MyIconFont from '@/components/common/myIconfont'
 import { flattenRoutes, getKeyName } from '@/assets/js/publicFunc'
 import menus from '@/route/routes'
 import logo from '@/assets/img/logo.png'
-import { useAppSelector } from '@/store/redux-hooks'
-import { selectUserInfo } from '@/store/slicers/userSlice'
+import { useAppSelector, useAppDispatch } from '@/store/redux-hooks'
+import { selectUserInfo, setUserInfo } from '@/store/slicers/userSlice'
 import { selectCollapsed, selectTheme } from '@/store/slicers/appSlice'
+import Api from '@/api'
 import styles from './Menu.module.less'
 
 const { Header } = Layout
@@ -18,11 +19,7 @@ const flatMenu = flattenRoutes(menus)
 
 type MenuType = CommonObjectType<string>
 
-interface MenuProps {
-  menuMode: 'horizontal' | 'vertical'
-}
-
-const MenuView: FC<MenuProps> = ({ menuMode }) => {
+const MenuView: FC = () => {
   const userInfo = useAppSelector(selectUserInfo)
   const collapsed = useAppSelector(selectCollapsed)
   const theme = useAppSelector(selectTheme)
@@ -30,6 +27,7 @@ const MenuView: FC<MenuProps> = ({ menuMode }) => {
   const { tabKey: curKey = 'home' } = getKeyName(pathname)
   const [current, setCurrent] = useState(curKey)
   const { permission = [] } = userInfo
+  const dispatch = useAppDispatch()
 
   // 递归逐级向上获取最近一级的菜单，并高亮
   const higherMenuKey = useCallback(
@@ -46,6 +44,12 @@ const MenuView: FC<MenuProps> = ({ menuMode }) => {
     },
     [pathname]
   )
+
+  useEffect(() => {
+    Api.getCurrentInfo().then((res) => {
+      dispatch(setUserInfo(res))
+    })
+  }, [])
 
   useEffect(() => {
     const { tabKey } = getKeyName(pathname)
@@ -72,9 +76,11 @@ const MenuView: FC<MenuProps> = ({ menuMode }) => {
   // 创建可跳转的多级子菜单
   const createMenuItem = (data: MenuType): JSX.Element => {
     return (
-      <Menu.Item className={styles.noselect} key={data.key} title={data.name}>
-        <Link to={data.path}>{subMenuTitle(data)}</Link>
-      </Menu.Item>
+      !data.hideInMenu && (
+        <Menu.Item className={styles.noselect} key={data.key} title={data.name}>
+          <Link to={data.path}>{subMenuTitle(data)}</Link>
+        </Menu.Item>
+      )
     )
   }
 
@@ -114,30 +120,12 @@ const MenuView: FC<MenuProps> = ({ menuMode }) => {
       </div>
     </Link>
   )
-  if (menuMode === 'horizontal')
-    return (
-      <Header className="flex header">
-        <LogLink />
-        <div className={styles.autoWidthMenu}>
-          <Menu
-            mode="horizontal"
-            onClick={handleClick}
-            selectedKeys={[current]}
-            theme={theme === 'default' ? 'light' : 'dark'}
-          >
-            {renderMenuMap(menus)}
-          </Menu>
-        </div>
-      </Header>
-    )
   return (
     <Layout.Sider
       collapsed={collapsed}
       style={{
         overflow: 'auto',
         height: '100vh',
-        position: 'fixed',
-        left: 0,
         userSelect: 'none'
       }}
       width={220}
@@ -148,7 +136,10 @@ const MenuView: FC<MenuProps> = ({ menuMode }) => {
         mode="inline"
         onClick={handleClick}
         selectedKeys={[current]}
-        theme={theme === 'default' ? 'light' : 'dark'}
+        theme={theme}
+        style={{
+          flex: 1
+        }}
       >
         {renderMenuMap(menus)}
       </Menu>

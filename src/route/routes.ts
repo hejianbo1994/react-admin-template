@@ -12,11 +12,12 @@ import Workspace from '@/pages/home/Workspace'
 import ErrorPage from '@/pages/public/errorPage'
 
 import UserList from '@/pages/user/list'
+import AccountSetting from '@/pages/setting/accountSetting'
 import UserEdit from '@/pages/user/edit'
 
 import RoleList from '@/pages/role/list'
 
-import AuthTest from '@/pages/test'
+import Business from '@/pages/authCenter/business/list'
 import { MenuRoute } from '@/route/types'
 // import React from 'react'
 // import { Icon } from '@iconify/react'
@@ -37,15 +38,32 @@ const preDefinedRoutes: MenuRoute[] = [
     component: Home
   },
   {
-    path: '/workspace',
-    name: '工作台',
-    exact: true,
-    key: 'workspace',
-    component: Workspace,
-    icon: DashboardOutlined
-    // icon: () =>
-    //   React.createElement(Icon, { icon: 'arcticons:syska-smart-home' })
+    path: '/setting',
+    name: '设置',
+    key: 'setting',
+    type: 'subMenu',
+    icon: UserOutlined,
+    iconfont: 'icon-xiaoshouzongjian',
+    routes: [
+      {
+        path: '/setting/accountSetting',
+        name: '账号设置',
+        exact: true,
+        key: 'setting:accountSetting',
+        component: AccountSetting
+      }
+    ]
   },
+  // {
+  // path: '/workspace',
+  // name: '工作台',
+  // exact: true,
+  // key: 'workspace',
+  // component: Workspace,
+  // icon: DashboardOutlined
+  // icon: () =>
+  //   React.createElement(Icon, { icon: 'arcticons:syska-smart-home' })
+  // },
   {
     path: '/user',
     name: '用户管理',
@@ -58,22 +76,22 @@ const preDefinedRoutes: MenuRoute[] = [
         path: '/user/list',
         name: '用户列表',
         exact: true,
-        key: 'user:list:view',
+        key: 'user:list',
         component: UserList
       },
       {
-        path: '/user/list/add',
+        path: '/user/add',
         name: '新增用户',
         exact: true,
-        key: 'user:list:add',
+        key: 'user:add',
         // hideInMenu: true,
         component: UserEdit
       },
       {
-        path: '/user/list/edit',
+        path: '/user/edit',
         name: '编辑用户',
         exact: true,
-        key: 'user:list:edit',
+        key: 'user:edit',
         hideInMenu: true,
         component: UserEdit
       }
@@ -90,23 +108,33 @@ const preDefinedRoutes: MenuRoute[] = [
         path: '/role/list',
         name: '角色列表',
         exact: true,
-        key: 'role:list:view',
+        key: 'role:list',
         component: RoleList
       }
     ]
   },
   {
-    path: '/auth',
-    name: '权限测试页',
-    exact: true,
-    key: 'auth:test:view',
-    icon: BankOutlined,
-    component: AuthTest
+    path: '/authCenter',
+    name: '权限中心',
+    key: 'authCenter',
+    type: 'subMenu',
+    icon: AuditOutlined,
+    routes: [
+      {
+        icon: AuditOutlined,
+        path: '/authCenter/business',
+        name: '商户管理',
+        exact: true,
+        key: 'authCenter:business:list',
+        component: Business
+      }
+    ]
   },
   {
     path: '/test-api',
     name: '测试api',
     exact: true,
+    hideInMenu: true,
     key: '/test-api',
     icon: ApiOutlined,
     component: TestApiLoad
@@ -117,7 +145,7 @@ const preDefinedRoutes: MenuRoute[] = [
     exact: true,
     key: '/403',
     icon: InfoCircleOutlined,
-    // hideInMenu: true,
+    hideInMenu: true,
     component: ErrorPage
   }
 ]
