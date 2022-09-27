@@ -57,7 +57,7 @@ const Home: FC = () => {
 
   useEffect(() => {
     // 未登录
-    if (!token && pathname !== '/login') {
+    if (!token) {
       history.replace({ pathname: '/login' })
       return
     }
@@ -70,6 +70,7 @@ const Home: FC = () => {
 
     // 检查权限，比如直接从地址栏输入的，提示无权限
     const isHasAuth = checkAuth(pathname)
+    console.log(isHasAuth, 'sss')
     if (!isHasAuth) {
       const errorUrl = '/403'
       const {

@@ -21,7 +21,9 @@ const LoginForm: FC = () => {
   const history = useHistory()
   useEffect(() => {
     const { token } = userInfo
+    console.log(token, 'token')
     if (token) {
+      console.log(token, '12121')
       history.push('/')
       return
     }
