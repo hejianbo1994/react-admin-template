@@ -1,32 +1,38 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useHistory } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
+import type { MenuTheme } from 'antd'
 
-import MyIconFont from '@/components/common/myIconfont'
 import { flattenRoutes, getKeyName } from '@/assets/js/publicFunc'
 import menus from '@/route/routes'
 import logo from '@/assets/img/logo.png'
 import { useAppSelector, useAppDispatch } from '@/store/redux-hooks'
 import { selectUserInfo, setUserInfo } from '@/store/slicers/userSlice'
-import { selectCollapsed, selectTheme } from '@/store/slicers/appSlice'
+import { selectCollapsed } from '@/store/slicers/appSlice'
+
 import Api from '@/api'
 import styles from './Menu.module.less'
 
-const { Header } = Layout
-
-const { SubMenu } = Menu
 const flatMenu = flattenRoutes(menus)
 
 type MenuType = CommonObjectType<string>
 
+type Theme = 'dark' | 'light'
+
 const MenuView: FC = () => {
+  const [theme, setTheme] = useState(
+    window.localStorage.getItem('theme') as Theme
+  )
+
+  const history = useHistory()
+
   const userInfo = useAppSelector(selectUserInfo)
   const collapsed = useAppSelector(selectCollapsed)
-  const theme = useAppSelector(selectTheme)
   const { pathname } = useLocation()
   const { tabKey: curKey = 'home' } = getKeyName(pathname)
   const [current, setCurrent] = useState(curKey)
-  const { permission = [] } = userInfo
+  const [menuList, setMenuList] = useState([])
+  const { permission = [], businessName } = userInfo
   const dispatch = useAppDispatch()
 
   // 递归逐级向上获取最近一级的菜单，并高亮
@@ -46,10 +52,25 @@ const MenuView: FC = () => {
   )
 
   useEffect(() => {
-    Api.getCurrentInfo().then((res) => {
-      dispatch(setUserInfo(res))
-    })
-  }, [])
+    if (userInfo.token) {
+      //  创建菜单树
+
+      Api.getCurrentInfo()
+        .then((res) => {
+          dispatch(setUserInfo(res))
+        })
+        .catch(() => {})
+    }
+  }, [userInfo.token])
+
+  useEffect(() => {
+    const list = menus.map((item) => renderMenu(item)).filter((v) => v)
+    setMenuList(list)
+  }, [userInfo.permission])
+
+  useEffect(() => {
+    setTheme(window.localStorage.getItem('theme') as Theme)
+  }, [theme])
 
   useEffect(() => {
     const { tabKey } = getKeyName(pathname)
@@ -62,49 +83,43 @@ const MenuView: FC = () => {
     setCurrent(key)
   }
 
-  // 子菜单的标题
-  const subMenuTitle = (data: MenuType): JSX.Element => {
-    const { icon: MenuIcon, iconfont } = data
-    return (
-      <div className="flex items-center">
-        {iconfont ? <MyIconFont type={iconfont} /> : !!MenuIcon && <MenuIcon />}
-        <span className={styles.noselect}>{data.name}</span>
-      </div>
-    )
-  }
-
   // 创建可跳转的多级子菜单
-  const createMenuItem = (data: MenuType): JSX.Element => {
+  const createMenuItem = (data: MenuType) => {
     return (
-      !data.hideInMenu && (
-        <Menu.Item className={styles.noselect} key={data.key} title={data.name}>
-          <Link to={data.path}>{subMenuTitle(data)}</Link>
-        </Menu.Item>
-      )
+      !data.hideInMenu && {
+        label: data.name,
+        key: data.key,
+        icon: <data.icon />,
+        onClick: () => {
+          history.push(data.path)
+        }
+      }
     )
   }
 
   // 创建可展开的第一级子菜单
-  const creatSubMenu = (data: CommonObjectType): JSX.Element => {
+  const creatSubMenu = (data) => {
     const menuItemList = data.routes.reduce((prev, item: MenuType) => {
-      const isAuthMenu = permission.find((ele) => item.key === ele.code)
+      const isAuthMenu = permission.find((key: any) => item.key === key)
       return isAuthMenu && !item.hideInMenu ? [...prev, renderMenu(item)] : prev
     }, [])
 
-    return menuItemList.length > 0 ? (
-      <SubMenu key={data.key} title={subMenuTitle(data)}>
-        {menuItemList}
-      </SubMenu>
-    ) : null
+    return menuItemList.length > 0
+      ? {
+          label: data.name,
+          key: data.key,
+          icon: <data.icon />,
+          children: menuItemList
+        }
+      : null
   }
-
-  // 创建菜单树
-  const renderMenuMap = (list: CommonObjectType): JSX.Element[] =>
-    list.map((item) => renderMenu(item))
 
   // 判断是否有子菜单，渲染不同组件
   function renderMenu(item: MenuType) {
-    return item.type === 'subMenu' ? creatSubMenu(item) : createMenuItem(item)
+    if (item.type === 'subMenu') {
+      return creatSubMenu(item)
+    }
+    return createMenuItem(item)
   }
 
   const setDefaultKey = flatMenu
@@ -116,7 +131,7 @@ const MenuView: FC = () => {
     <Link to={{ pathname: '/' }}>
       <div className="flex items-center logo">
         <img alt="logo" src={logo} width="32" />
-        {!collapsed && <h1>Antd多页签模板</h1>}
+        {!collapsed && <h1>Space云筑</h1>}
       </div>
     </Link>
   )
@@ -132,17 +147,15 @@ const MenuView: FC = () => {
     >
       <LogLink />
       <Menu
+        items={menuList}
         defaultOpenKeys={showKeys}
         mode="inline"
         onClick={handleClick}
         selectedKeys={[current]}
-        theme={theme}
         style={{
           flex: 1
         }}
-      >
-        {renderMenuMap(menus)}
-      </Menu>
+      />
     </Layout.Sider>
   )
 }

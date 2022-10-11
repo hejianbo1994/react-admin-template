@@ -8,7 +8,6 @@ import { ConfigProvider } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
-import { loadOidcUser } from '@/config/oidc_setting'
 import { setUserInfo } from '@/store/slicers/userSlice'
 import App from './App'
 import '@/assets/css/public.less' // 官方全部样式 ,但是可以通过变量控制
@@ -40,10 +39,6 @@ if (process.env.NODE_ENV === 'development') {
  * @see https://mswjs.io/docs/recipes/deferred-mounting
  */
 appReady.then(async () => {
-  await loadOidcUser(
-    (provided) => provided && store.dispatch(setUserInfo(provided))
-  )
-
   ReactDOM.render(
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>

@@ -1,7 +1,6 @@
 import Axios from 'axios'
 import { message } from 'antd'
 import { store } from '@/store'
-import { HashRouter } from 'react-router-dom'
 import { setUserInfo } from '@/store/slicers/userSlice'
 
 interface AxiosConfig {
@@ -20,12 +19,17 @@ const config: AxiosConfig = {
 
 const axios = Axios.create(config)
 
-const router: CommonObjectType = new HashRouter({})
-
 // token失效，清除用户信息并返回登录界面
 const clearAll = () => {
-  store.dispatch(setUserInfo({}))
-  router.history.replace({ pathname: '/login' })
+  store.dispatch(
+    setUserInfo({
+      username: '',
+      phone: '',
+      displayName: '',
+      permission: [],
+      token: ''
+    })
+  )
 }
 
 // 请求前拦截
@@ -48,12 +52,17 @@ axios.interceptors.response.use(
     return Promise.resolve(data.data)
   },
   (err) => {
+    let MESSAGE = JSON.stringify(err.response.data.message)
+
     if (err.response.status === 401) {
-      // token失效
+      MESSAGE = 'token失效'
       clearAll()
     }
+    if (err.response.status === 504) {
+      MESSAGE = '网关超时'
+    }
     message.destroy()
-    message.error(err.response.data.message)
+    message.error(MESSAGE)
     return Promise.reject(err.response)
   }
 )

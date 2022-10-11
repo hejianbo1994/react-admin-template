@@ -7,7 +7,7 @@
     "@iconify/react": "^3.1.4",
     "@reduxjs/toolkit": "^1.8.0",
     "ali-oss": "^6.7.0",
-    "antd": "4.2.0",
+    "antd": "4.23.3",
     "axios": "^0.26.0",
     "braft-editor": "^2.3.8",
     "classnames": "^2.2.6",

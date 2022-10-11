@@ -14,7 +14,6 @@ const Editor: FC<Props> = (props) => {
   const { value, onChange } = props
 
   const uploadFn = (param: CommonObjectType): void => {
-    console.log(param, 'uploadTypeuploadType')
     // 上传中
     const progressFn = (p: number) => {
       // 上传进度发生变化时调用param.progress

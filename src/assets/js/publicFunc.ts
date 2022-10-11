@@ -205,7 +205,7 @@ export const getPermission = () =>
  */
 export const isAuthorized = (val: string): boolean => {
   const permissions = getPermission()
-  return !!permissions.find((_) => _.code === val)
+  return !!permissions.find((key: any) => key === val)
 }
 
 /**

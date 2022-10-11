@@ -4,7 +4,8 @@ import React, {
   useImperativeHandle,
   useRef,
   ReactNode,
-  FC
+  FC,
+  useEffect
 } from 'react'
 import { Table } from 'antd'
 import useService from '@/utils/tableHook'
@@ -39,6 +40,7 @@ interface TableProps {
   rowClassName?: string
   small?: boolean
   showHeader?: boolean
+  showCheckbox?: boolean
   extraPagation?: string[]
   beforeSearch?: (arg0?: unknown) => void
   onSelectRow?: (arg0?: string[], arg1?: string[]) => void
@@ -56,6 +58,7 @@ const MyTable: FC<TableProps> = forwardRef(
      * 可以引用父组件的ref绑定到子组件自身的节点上.
      */
     const searchForm: RefType = useRef(null)
+
     const {
       columns,
       apiFun,
@@ -66,6 +69,7 @@ const MyTable: FC<TableProps> = forwardRef(
       small,
       showHeader,
       extraPagation,
+      showCheckbox,
       beforeSearch,
       onSelectRow,
       onFieldsChange,
@@ -111,7 +115,6 @@ const MyTable: FC<TableProps> = forwardRef(
 
     // 执行搜索操作
     const handleSearch = (val: object): void => {
-      console.log(val, 'val')
       setSearchParams(val)
       setTableParams({ ...tableParams, ...val, pageNum: 1 })
     }
@@ -139,12 +142,15 @@ const MyTable: FC<TableProps> = forwardRef(
       onSelectRow(selectedRowKeys, selectedRows)
     }
     // 复选框配置
-    const rowSelection = {
-      selectedRowKeys: selectedKeys,
-      onChange: onSelectChange
-    }
     // 判断是否有复选框显示
-    const showCheckbox = onSelectRow ? { rowSelection } : {}
+    const rowSelection = showCheckbox
+      ? {
+          rowSelection: {
+            selectedRowKeys: selectedKeys,
+            onChange: onSelectChange
+          }
+        }
+      : {}
 
     // 展开配置
     const expendConfig = {
@@ -223,7 +229,7 @@ const MyTable: FC<TableProps> = forwardRef(
         )}
         {/* 列表 */}
         <Table
-          {...showCheckbox}
+          {...rowSelection}
           {...showExpend}
           rowKey={rowKey}
           loading={loading}
@@ -257,6 +263,7 @@ MyTable.defaultProps = {
   small: false,
   showHeader: true,
   extraPagation: [],
+  showCheckbox: false,
   beforeSearch: () => {},
   onSelectRow: () => {},
   onFieldsChange: () => {},

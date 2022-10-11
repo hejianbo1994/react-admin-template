@@ -3,14 +3,10 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import Container from '@/pages/container'
 import Login from '@/pages/login'
 
-const App: FC = () => (
+const App: FC = (props) => (
   <Router>
     <Route exact path="/login" component={Login} />
-    <Route
-      path="/"
-      key="container"
-      render={(props: unknown) => <Container {...props} />}
-    />
+    <Route path="/" key="container" render={() => <Container {...props} />} />
   </Router>
 )
 

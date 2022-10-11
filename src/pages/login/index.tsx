@@ -1,49 +1,95 @@
-import React, { useEffect, FC } from 'react'
-import { useHistory } from 'react-router-dom'
-import { LockOutlined, UserOutlined, PhoneOutlined } from '@ant-design/icons'
-import { Form, Input, Button, message } from 'antd'
+import React, { useEffect, useState, useRef, FC } from 'react'
+import { LockOutlined, PhoneOutlined } from '@ant-design/icons'
+import { Form, Input, Button, Modal, Select } from 'antd'
 import ReactCanvasNest from 'react-canvas-nest'
 import './login.less'
 import Logo from '@/assets/img/logo.png'
 import session from '@/api/sys/session'
-import { OidcLogin } from '@/pages/login/OidcLogin'
-import { useAppDispatch, useAppSelector } from '@/store/redux-hooks'
-import { selectUserInfo, setUserInfo } from '@/store/slicers/userSlice'
+import { useAppDispatch } from '@/store/redux-hooks'
+import { setUserInfo } from '@/store/slicers/userSlice'
 import { setTabs } from '@/store/slicers/tabSlice'
-import { selectTheme } from '@/store/slicers/appSlice'
-import { userRes } from '@/mocks/authentication_mock'
 import CryptoJs from 'crypto-js'
+import { useHistory } from 'react-router-dom'
+
+const { Option } = Select
 
 const LoginForm: FC = () => {
   const dispatch = useAppDispatch()
-  const userInfo = useAppSelector(selectUserInfo)
-  const theme = useAppSelector(selectTheme)
+  const [loading, setLoading] = useState(false)
   const history = useHistory()
+  const selectedBusinessId = useRef('')
+  const modal = useRef(null)
   useEffect(() => {
-    const { token } = userInfo
-    console.log(token, 'token')
-    if (token) {
-      console.log(token, '12121')
-      history.push('/')
-      return
-    }
     // 重置 tab栏为首页
     dispatch(setTabs(['/']))
-  }, [history, dispatch, userInfo])
+  }, [dispatch])
+
+  const handleChange = (value: string) => {
+    selectedBusinessId.current = value
+  }
+
+  const showConfirm = ({ phone, password, businessIdList }) => {
+    modal.current = Modal.confirm({
+      title: null,
+      icon: null,
+      content: (
+        <>
+          请选择登陆:&nbsp;&nbsp;
+          <Select
+            defaultValue={selectedBusinessId.current}
+            style={{ width: 270 }}
+            onChange={handleChange}
+          >
+            {businessIdList.map((business) => (
+              <Option key={business.businessId} value={business.businessId}>
+                {business.businessName}
+              </Option>
+            ))}
+          </Select>
+        </>
+      ),
+      onOk() {
+        return new Promise<void>((resolve, reject) => {
+          session
+            .login({
+              phone,
+              password: CryptoJs.MD5(password).toString(),
+              businessId: selectedBusinessId.current
+            })
+            .then(({ token }) => {
+              dispatch(setUserInfo({ token }))
+              history.replace({ pathname: '/' })
+              resolve()
+            })
+            .catch(() => {
+              modal.current.destroy()
+              reject()
+            })
+        })
+      },
+      onCancel() {
+        selectedBusinessId.current = ''
+      }
+    })
+  }
 
   // 触发登录方法
-  const onFinish = (values: CommonObjectType<string>) => {
-    const { phone, password } = values
+  const onFinish = ({ phone, password }) => {
+    setLoading(true)
     session
       .login({
         phone,
         password: CryptoJs.MD5(password).toString()
       })
-      .then(({ token, permission }) => {
-        dispatch(setUserInfo({ token, phone, permission }))
-        history.push('/')
+      .then((res) => {
+        setLoading(false)
+        selectedBusinessId.current =
+          selectedBusinessId.current || res[0].businessId
+        showConfirm({ phone, password, businessIdList: res })
       })
-      .catch(() => {})
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const FormView = (
@@ -57,7 +103,12 @@ const LoginForm: FC = () => {
         name="phone"
         rules={[{ required: true, message: '请输入手机号' }]}
       >
-        <Input placeholder="手机号" prefix={<PhoneOutlined />} size="large" />
+        <Input
+          placeholder="手机号"
+          prefix={<PhoneOutlined />}
+          size="large"
+          disabled={loading}
+        />
       </Form.Item>
       <Form.Item
         name="password"
@@ -68,10 +119,12 @@ const LoginForm: FC = () => {
           placeholder="密码"
           prefix={<LockOutlined />}
           size="large"
+          disabled={loading}
         />
       </Form.Item>
       <Form.Item>
         <Button
+          loading={loading}
           className="login-form-button"
           htmlType="submit"
           size="large"
@@ -79,12 +132,12 @@ const LoginForm: FC = () => {
         >
           登录
         </Button>
-        {/* <OidcLogin loginCallback={() => history.push('/')} /> */}
       </Form.Item>
     </Form>
   )
 
-  const floatColor = { light: '110,65,255', dark: '24,144,255' }[theme]
+  const floatColor = '110,65,255'
+  // const floatColor = { light: '110,65,255', dark: '24,144,255' }[theme]
   return (
     <div className="login-layout" id="login-layout">
       <ReactCanvasNest

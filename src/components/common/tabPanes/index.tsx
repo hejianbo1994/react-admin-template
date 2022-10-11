@@ -235,56 +235,78 @@ const TabPanes: FC<Props> = (props) => {
   }, [panes, panesItem, pathname, resetTabs, search, storeTabs, tabActiveKey])
 
   const isDisabled = () => selectedPanel.key === 'home'
+
+  const menuList = [
+    {
+      label: '刷新',
+      key: 'refresh',
+      onClick: refreshTab,
+      disabled: selectedPanel.path !== fullPath
+    },
+    {
+      label: '关闭',
+      key: 'close',
+      onClick: (e) => {
+        e.domEvent.stopPropagation()
+        remove(selectedPanel.key)
+      },
+      disabled: isDisabled()
+    },
+    {
+      label: '关闭其他',
+      key: 'closeOther',
+      onClick: (e) => {
+        e.domEvent.stopPropagation()
+        removeAll()
+      }
+    },
+    {
+      label: '全部关闭',
+      key: 'closeAll',
+      onClick: (e) => {
+        e.domEvent.stopPropagation()
+        removeAll(true)
+      },
+      disabled: isDisabled()
+    }
+  ]
+
   // tab右击菜单
-  const menu = (
-    <Menu>
-      <Menu.Item
-        key="1"
-        onClick={() => refreshTab()}
-        disabled={selectedPanel.path !== fullPath}
-      >
-        刷新
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        onClick={(e) => {
-          e.domEvent.stopPropagation()
-          remove(selectedPanel.key)
-        }}
-        disabled={isDisabled()}
-      >
-        关闭
-      </Menu.Item>
-      <Menu.Item
-        key="3"
-        onClick={(e) => {
-          e.domEvent.stopPropagation()
-          removeAll()
-        }}
-      >
-        关闭其他
-      </Menu.Item>
-      <Menu.Item
-        key="4"
-        onClick={(e) => {
-          e.domEvent.stopPropagation()
-          removeAll(true)
-        }}
-        disabled={isDisabled()}
-      >
-        全部关闭
-      </Menu.Item>
-    </Menu>
-  )
+  const menu = <Menu items={menuList} />
+
   // 阻止右键默认事件
   const preventDefault = (e: CommonObjectType, panel: object) => {
     e.preventDefault()
     setSelectedPanel(panel)
   }
 
+  const panesList = panes.map((pane) => ({
+    label: (
+      <Dropdown overlay={menu} placement="bottomLeft" trigger={['contextMenu']}>
+        <span onContextMenu={(e) => preventDefault(e, pane)}>
+          {/* {isReload && pane.path === fullPath && pane.path !== '/403' && (
+        <SyncOutlined title="刷新" spin={isReload} />
+      )} */}
+          {pane.title}
+        </span>
+      </Dropdown>
+    ),
+    key: pane.key,
+    closable: pane.closable,
+    children:
+      reloadPath !== pane.path ? (
+        <pane.content path={pane.path} />
+      ) : (
+        <div style={{ height: '100vh' }}>
+          <Alert message="刷新中..." type="info" />
+        </div>
+      )
+  }))
+
   return (
     <Tabs
       // destroyInactiveTabPane
+      items={panesList}
       activeKey={activeKey}
       className={classNames(style.tabs, 'history-tabs')}
       defaultActiveKey={defaultActiveKey}
@@ -294,36 +316,7 @@ const TabPanes: FC<Props> = (props) => {
       onTabClick={onTabClick}
       type="editable-card"
       size="small"
-    >
-      {panes.map((pane: CommonObjectType) => (
-        <TabPane
-          closable={pane.closable}
-          key={pane.key}
-          tab={
-            <Dropdown
-              overlay={menu}
-              placement="bottomLeft"
-              trigger={['contextMenu']}
-            >
-              <span onContextMenu={(e) => preventDefault(e, pane)}>
-                {/* {isReload && pane.path === fullPath && pane.path !== '/403' && (
-                  <SyncOutlined title="刷新" spin={isReload} />
-                )} */}
-                {pane.title}
-              </span>
-            </Dropdown>
-          }
-        >
-          {reloadPath !== pane.path ? (
-            <pane.content path={pane.path} />
-          ) : (
-            <div style={{ height: '100vh' }}>
-              <Alert message="刷新中..." type="info" />
-            </div>
-          )}
-        </TabPane>
-      ))}
-    </Tabs>
+    />
   )
 }
 

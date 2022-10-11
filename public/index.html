@@ -13,6 +13,7 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -191,35 +192,50 @@
   </div>
 </div>
 <script>
-  const themeMedia = window.matchMedia("(prefers-color-scheme: light)");
-  const lightMedia = function(){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (e.matches) {
+      console.log('dark')
+      window.localStorage.setItem('theme', 'dark')
+      darkMedia()
+    } else {
+      console.log('light')
+      window.localStorage.setItem('theme', 'light')
+      lightMedia()
+    }
+  })
+
+  const lightMedia = () => {
+    const body =
+      document.getElementsByTagName('body')[0] || document.documentElement
     const script = document.createElement('script')
     script.id = 'themeJs'
     script.src = '/less.min.js'
-    document.body.appendChild(script)
+    script.type = 'text/javascript'
+    script.id = 'themeJs'
+    body.appendChild(script)
   }
-  const darkMedia = function(){
+
+  const darkMedia = () => {
     const themeJs = document.getElementById('themeJs')
     const themeStyle = document.getElementById('less:color')
     if (themeJs) themeJs.remove()
     if (themeStyle) themeStyle.remove()
   }
-  if(themeMedia.matches){
-    console.log('light')
-    lightMedia()
-  }else{
-    console.log('dark')
-    darkMedia()
-  }
-  themeMedia.addEventListener('change',e => {
-    if (e.matches) {
-      console.log('light')
-      lightMedia()
-    } else {
+
+  const theme = window.localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+
+  if (theme === 'dark') {
       console.log('dark')
+      window.localStorage.setItem('theme', 'dark')
       darkMedia()
     }
-  });
+  if (theme === 'light') {
+    console.log('light')
+    window.localStorage.setItem('theme', 'light')
+    lightMedia()
+  }
+
+
 
 </script>
 <!--

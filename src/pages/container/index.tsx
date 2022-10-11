@@ -38,7 +38,6 @@ interface PanesItemProps {
 const Home: FC = () => {
   const userInfo = useAppSelector(selectUserInfo)
   const collapsed = useAppSelector(selectCollapsed)
-  const menuMode = useAppSelector(selectMenuMode)
   const dispatch = useAppDispatch()
   const [tabActiveKey, setTabActiveKey] = useState<string>('home')
   const [panesItem, setPanesItem] = useState<PanesItemProps>({
@@ -70,8 +69,7 @@ const Home: FC = () => {
 
     // 检查权限，比如直接从地址栏输入的，提示无权限
     const isHasAuth = checkAuth(pathname)
-    console.log(isHasAuth, 'sss')
-    if (!isHasAuth) {
+    if (!isHasAuth && !noNewTab.includes(pathname)) {
       const errorUrl = '/403'
       const {
         tabKey: errorKey,

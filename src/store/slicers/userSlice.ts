@@ -3,17 +3,18 @@ import type { RootState } from '@/store'
 import { UserInfo } from '@/app_models/user'
 
 export interface UserState {
-  UserInfo: UserInfo & { is_oidc_user: boolean }
+  UserInfo: UserInfo
 }
 
 const initialState: UserState = {
   UserInfo: {
-    username: '',
+    businessName: '',
+    businessId: '',
+    businessPermission: [],
     phone: '',
-    displayName: '',
     permission: [],
-    token: null,
-    is_oidc_user: false
+    token: '',
+    name: ''
   }
 }
 
@@ -24,11 +25,14 @@ export const userSlice = createSlice({
   reducers: {
     setUserInfo: (state, action) => {
       state.UserInfo = { ...state.UserInfo, ...action.payload }
+    },
+    initUserInfo: (state) => {
+      state.UserInfo = initialState.UserInfo
     }
   }
 })
 
-export const { setUserInfo } = userSlice.actions
+export const { setUserInfo, initUserInfo } = userSlice.actions
 
 export const selectUserInfo = (state: RootState) => state.user.UserInfo
 

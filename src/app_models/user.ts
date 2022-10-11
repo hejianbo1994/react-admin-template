@@ -1,23 +1,34 @@
-export interface Permission {
-  code: string
-  name: string
-  description?: string
-}
-
 export interface UserInfo {
-  username: string
+  businessName: string
+  businessId: string
+  businessPermission: {
+    code: string
+    name: string
+  }[]
   phone: string
-  displayName?: string
+  name: string
   password?: string
   token: string
-  permission: Permission[]
+  permission: string[]
 }
 
 export interface BusinessInfo {
+  status: boolean
+  businessPermission: string[]
+  allPermission: { code: string; name: string; hidden: boolean }[]
+  businessName: string
+  businessId: string
+}
+export interface BusinessUserInfo {
   phone: string
-  displayName?: string
-  password?: string
-  token: string
-  permission: Permission[]
-  admin: string
+  businessPermission: { code: string; name: string; hidden: boolean }[]
+  allPermission: { code: string; name: string; hidden: boolean }[]
+  permission: string[]
+  name: string
+  _id: string
+}
+export interface Permission {
+  code: string
+  name: string
+  hidden: boolean
 }

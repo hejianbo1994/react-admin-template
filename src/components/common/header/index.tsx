@@ -9,49 +9,80 @@ import {
 } from '@ant-design/icons'
 import Breadcrumb from '@/components/common/breadcrumb'
 import { Icon } from '@iconify/react'
-import { oidcLogout } from '@/config/oidc_setting'
 import { useAppDispatch, useAppSelector } from '@/store/redux-hooks'
-import { selectUserInfo, setUserInfo } from '@/store/slicers/userSlice'
-import {
-  selectTheme,
-  setCollapsed as setCollapsedGlobal
-} from '@/store/slicers/appSlice'
-
+import { selectUserInfo, initUserInfo } from '@/store/slicers/userSlice'
+import { setCollapsed as setCollapsedGlobal } from '@/store/slicers/appSlice'
 import style from './Header.module.less'
 
-const Header: FC = () => {
-  const dispatch = useAppDispatch()
-  const theme = useAppSelector(selectTheme)
-  const userInfo = useAppSelector(selectUserInfo)
-  const history = useHistory()
-  const { username = '-', phone } = userInfo
-  const firstWord = username.slice(0, 1)
-  const [collapsed, setCollapsed] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const logout = async () => {
-    console.log('user 登出', userInfo)
-    if (userInfo.is_oidc_user) {
-      setLoading(true)
-      await oidcLogout()
-      dispatch(setUserInfo({})) // 清除用户信息 下同
-    } else {
-      dispatch(setUserInfo({}))
-      history.replace({ pathname: '/login' })
-    }
-  }
+type MenuType = CommonObjectType<string>
 
-  const menu = (
-    <Menu>
-      <Menu.Item onClick={logout}>
-        <span className="ant-btn-link">退出登录</span>
-        {loading && <LoadingOutlined />}
-      </Menu.Item>
-    </Menu>
+const Header: FC = () => {
+  const [theme, setTheme] = useState(
+    window.localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light')
   )
+  const dispatch = useAppDispatch()
+  const userInfo = useAppSelector(selectUserInfo)
+  const { phone } = userInfo
+  const [collapsed, setCollapsed] = useState(false)
+  const logout = async () => {
+    dispatch(initUserInfo())
+    window.localStorage.clear()
+  }
+  const menuList = [
+    {
+      label: <span className="ant-btn-link">退出登录</span>,
+      key: 'logout',
+      onClick: logout
+    }
+  ]
+
+  const menu = <Menu items={menuList} />
 
   const toggle = (): void => {
     setCollapsed(!collapsed)
     dispatch(setCollapsedGlobal(!collapsed))
+  }
+
+  const lightMedia = () => {
+    const body =
+      document.getElementsByTagName('body')[0] || document.documentElement
+
+    const script = document.createElement('script')
+    script.id = 'themeJs'
+    script.src = '/less.min.js'
+    script.type = 'text/javascript'
+    script.id = 'themeJs'
+    body.appendChild(script)
+    window.onload = function () {
+      const themeStyle = document.getElementById('less:color')
+      if (themeStyle) {
+        window.localStorage.setItem('themeStyle', themeStyle.innerHTML)
+      }
+    }
+  }
+
+  const darkMedia = () => {
+    const themeJs = document.getElementById('themeJs')
+    const themeStyle = document.getElementById('less:color')
+    if (themeJs) themeJs.remove()
+    if (themeStyle) themeStyle.remove()
+  }
+
+  const changeTheme = (newTheme: string) => {
+    setTheme(newTheme)
+    if (newTheme === 'dark') {
+      console.log('dark')
+      window.localStorage.setItem('theme', 'dark')
+      darkMedia()
+    }
+    if (newTheme === 'light') {
+      console.log('light')
+      window.localStorage.setItem('theme', 'light')
+      lightMedia()
+    }
   }
 
   return (
@@ -65,10 +96,23 @@ const Header: FC = () => {
       </div>
       <Breadcrumb />
 
+      <div className={`fr ${style.themeSwitchWrapper}`}>
+        <div
+          className={`${style.themeSwitch} ${
+            { dark: style.themeSwitchDark, light: '' }[theme as string]
+          }`}
+          title="更换主题"
+          onClick={() => changeTheme(theme === 'light' ? 'dark' : 'light')}
+        >
+          <div className={style.themeSwitchInner} />
+          <Icon icon="emojione:sun" />
+          <Icon icon="bi:moon-stars-fill" color="#ffe62e" />
+        </div>
+      </div>
+
       {/* 右上角 */}
       <Dropdown className={`fr ${style.content}`} overlay={menu}>
         <span className={style.user}>
-          <span className="avart">{firstWord}</span>
           <span>{phone}</span>
           {/* <span>{username}</span> */}
         </span>
