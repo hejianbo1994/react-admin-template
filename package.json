@@ -91,7 +91,7 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack-bundle-analyzer": "^3.6.0"
   },
-  "homepage": ".",
+  "homepage": "/admin",
   "proxy": "http://192.168.8.83:8088",
   "lint-staged": {
     "*.{js,jsx}": "eslint"
