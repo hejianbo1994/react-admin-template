@@ -34,7 +34,7 @@
   "scripts": {
     "start": "cross-env PORT=4200 react-app-rewired start",
     "test": "react-app-rewired test",
-    "build": "react-app-rewired --openssl-legacy-provide build"
+    "build": "react-app-rewired build"
   },
   "eslintConfig": {
     "extends": "react-app"
