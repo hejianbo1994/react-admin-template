@@ -4,7 +4,7 @@ import Container from '@/pages/container'
 import Login from '@/pages/login'
 
 const App: FC = (props) => (
-  <Router basename="/admin">
+  <Router>
     <Route exact path="/login" component={Login} />
     <Route path="/" key="container" render={() => <Container {...props} />} />
   </Router>
