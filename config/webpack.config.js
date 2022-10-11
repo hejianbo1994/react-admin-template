@@ -13,10 +13,10 @@ const webpack = require('webpack')
 const path = require('path')
 const WebpackBar = require('webpackbar')
 const darkThemeVars = require('antd/dist/dark-theme')
-const {addReactRefresh} = require('customize-cra-react-refresh')
+const { addReactRefresh } = require('customize-cra-react-refresh')
 // 分析打包大小
 const addAnalyze = () => (config) => {
-  let plugins = [new BundleAnalyzerPlugin({analyzerPort: 7777})]
+  let plugins = [new BundleAnalyzerPlugin({ analyzerPort: 7777 })]
   config.plugins = [...config.plugins, ...plugins]
   return config
 }
@@ -73,6 +73,9 @@ const addWebpackBar = () => (config) => {
   config.plugins = [...config.plugins, ...plugins]
   return config
 }
+
+const paths = require('react-scripts/config/paths')
+paths.appBuild = path.join(path.dirname(paths.appBuild), 'admin')
 
 module.exports = override(
   // addAnalyze(),
