@@ -52,7 +52,7 @@ const Header: FC = () => {
 
     const script = document.createElement('script')
     script.id = 'themeJs'
-    script.src = '/less.min.js'
+    script.src = './less.min.js'
     script.type = 'text/javascript'
     script.id = 'themeJs'
     body.appendChild(script)
