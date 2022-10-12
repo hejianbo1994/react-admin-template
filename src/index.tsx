@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 
 import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/lib/integration/react'
@@ -11,6 +12,7 @@ import 'moment/locale/zh-cn'
 import { setUserInfo } from '@/store/slicers/userSlice'
 import App from './App'
 import '@/assets/css/public.less' // 官方全部样式 ,但是可以通过变量控制
+import '@/assets/css/tailwindoutput.css' // 官方全部样式 ,但是可以通过变量控制
 import '@/utils'
 import './index.css'
 
@@ -33,20 +35,15 @@ if (process.env.NODE_ENV === 'development') {
   // })
 }
 
-/**
- * Use deferred application mounting in order to work in a sandbox.
- * You MAY NOT need this in your application.
- * @see https://mswjs.io/docs/recipes/deferred-mounting
- */
+const root = createRoot(document.getElementById('root')!)
 appReady.then(async () => {
-  ReactDOM.render(
+  root.render(
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ConfigProvider locale={zhCN}>
           <App />
         </ConfigProvider>
       </PersistGate>
-    </ReduxProvider>,
-    document.getElementById('root')
+    </ReduxProvider>
   )
 })

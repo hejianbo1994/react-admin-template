@@ -277,3 +277,18 @@ export const previewImg = (children: string | React.ReactNode) => {
  */
 export const limitDecimal = (val: string) =>
   val.replace(/^(-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
+
+/**
+ *
+ * @param text 复制的文本
+ */
+export async function copyTextToClipboard(text, callback) {
+  if ('clipboard' in navigator) {
+    await navigator.clipboard.writeText(text)
+    callback()
+    return
+  } else {
+    callback()
+    return document.execCommand('copy', true, text)
+  }
+}

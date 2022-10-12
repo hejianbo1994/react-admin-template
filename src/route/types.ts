@@ -14,7 +14,7 @@ export interface MenuRoute extends NestedRoute {
   authority?: string[] | string
   hideChildrenInMenu?: boolean
   hideInMenu?: boolean
-  icon?: string | ReactNode
+  icon?: any
   locale?: string
   type?: MenuType
 

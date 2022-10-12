@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, FC } from 'react'
-import { LockOutlined, PhoneOutlined } from '@ant-design/icons'
-import { Form, Input, Button, Modal, Select } from 'antd'
+import { LockOutlined, PhoneOutlined, CopyOutlined } from '@ant-design/icons'
+import { Form, Input, Button, Modal, Select, message } from 'antd'
 import ReactCanvasNest from 'react-canvas-nest'
 import './login.less'
 import Logo from '@/assets/img/logo.png'
@@ -10,16 +10,26 @@ import { setUserInfo } from '@/store/slicers/userSlice'
 import { setTabs } from '@/store/slicers/tabSlice'
 import CryptoJs from 'crypto-js'
 import { useHistory } from 'react-router-dom'
+import { copyTextToClipboard } from '@/assets/js/publicFunc'
 
 const { Option } = Select
+
+const isMobile =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
 
 const LoginForm: FC = () => {
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
+  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false)
   const history = useHistory()
   const selectedBusinessId = useRef('')
   const modal = useRef(null)
   useEffect(() => {
+    if (isMobile) {
+      setIsMobileModalOpen(true)
+    }
     // 重置 tab栏为首页
     dispatch(setTabs(['/']))
   }, [dispatch])
@@ -139,21 +149,45 @@ const LoginForm: FC = () => {
   const floatColor = '110,65,255'
   // const floatColor = { light: '110,65,255', dark: '24,144,255' }[theme]
   return (
-    <div className="login-layout" id="login-layout">
-      <ReactCanvasNest
-        config={{
-          pointColor: floatColor,
-          lineColor: floatColor,
-          pointOpacity: 0.6
-        }}
-        style={{ zIndex: 1 }}
-      />
-      <div className="logo-box">
-        <img alt="" className="logo" src={Logo} />
-        <span className="logo-name">Space云筑</span>
+    <>
+      <div className="login-layout" id="login-layout">
+        <ReactCanvasNest
+          config={{
+            pointColor: floatColor,
+            lineColor: floatColor,
+            pointOpacity: 0.6
+          }}
+          style={{ zIndex: 1 }}
+        />
+        <div className="logo-box">
+          <img alt="" className="logo" src={Logo} />
+          <span className="logo-name">Space云筑</span>
+        </div>
+        {FormView}
       </div>
-      {FormView}
-    </div>
+
+      <Modal
+        title="提示"
+        open={isMobileModalOpen}
+        closable={false}
+        maskClosable={false}
+        footer={null}
+      >
+        <p>不支持手机访问</p>
+        <p className="flex items-center">
+          <span>请电脑访问</span>
+          <span>https://www.spacezhu.cn/admin</span>
+          <CopyOutlined
+            className="ml-2"
+            onClick={() =>
+              copyTextToClipboard('https://www.spacezhu.cn/admin', () => {
+                message.success('地址复制成功')
+              })
+            }
+          />
+        </p>
+      </Modal>
+    </>
   )
 }
 
