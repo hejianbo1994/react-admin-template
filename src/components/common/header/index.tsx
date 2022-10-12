@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Menu, Dropdown, Layout } from 'antd'
 import {
   MenuUnfoldOutlined,
@@ -96,7 +96,7 @@ const Header: FC = () => {
           <MenuFoldOutlined className={style.trigger} />
         )}
       </div>
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
 
       <div className={`fr ${style.themeSwitchWrapper}`}>
         <div

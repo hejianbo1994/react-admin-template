@@ -33,6 +33,7 @@
   },
   "scripts": {
     "start": "cross-env PORT=4200 react-app-rewired start",
+    "tailwindcss:watch": "npx tailwindcss -o ./src/assets/css/tailwindoutput.css --watch",
     "test": "react-app-rewired test",
     "build": "npx tailwindcss -o ./src/assets/css/tailwindoutput.css && react-app-rewired build"
   },
@@ -60,7 +61,7 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/react-redux": "^7.1.7",
-    "@types/react-router-dom": "^5.1.4",
+    "@types/react-router-dom": "^5.3.3",
     "@types/redux-promise": "^0.5.28",
     "autoprefixer": "^9.0.0",
     "babel-plugin-import": "^1.12.2",

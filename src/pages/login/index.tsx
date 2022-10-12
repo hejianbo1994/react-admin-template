@@ -9,7 +9,7 @@ import { useAppDispatch } from '@/store/redux-hooks'
 import { setUserInfo } from '@/store/slicers/userSlice'
 import { setTabs } from '@/store/slicers/tabSlice'
 import CryptoJs from 'crypto-js'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { copyTextToClipboard } from '@/assets/js/publicFunc'
 
 const { Option } = Select
@@ -23,7 +23,7 @@ const LoginForm: FC = () => {
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
   const [isMobileModalOpen, setIsMobileModalOpen] = useState(false)
-  const history = useHistory()
+  const navigate = useNavigate()
   const selectedBusinessId = useRef('')
   const modal = useRef(null)
   useEffect(() => {
@@ -68,7 +68,7 @@ const LoginForm: FC = () => {
             })
             .then(({ token }) => {
               dispatch(setUserInfo({ token }))
-              history.replace({ pathname: '/' })
+              navigate('/', { replace: true })
               resolve()
             })
             .catch(() => {

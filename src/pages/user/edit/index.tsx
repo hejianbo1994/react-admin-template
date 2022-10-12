@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button, message, Switch, Spin } from 'antd'
 import { formItemLayout, wrapperCol } from '@/config/layout'
 import { closeTabAction, getQuery } from '@/assets/js/publicFunc'
@@ -16,7 +16,7 @@ const FormView: FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false)
 
-  const history: CommonObjectType = useHistory()
+  const navigate = useNavigate()
 
   // 编辑状态
   useEffect(() => {

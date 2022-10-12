@@ -1,5 +1,5 @@
 import React, { useRef, useState, FC } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import MyTable from '@/components/common/table'
 import Api from '@/api/authCenter/permissionManage'
 import { Button, Input, Modal, Form, Space, Radio } from 'antd'
@@ -296,4 +296,10 @@ const PermissionList: FC = () => {
     </>
   )
 }
-export default withRouter(PermissionList)
+
+const withLocation = (Component) => (props) => {
+  const location = useLocation()
+
+  return <Component {...props} location={location} />
+}
+export default withLocation(PermissionList)

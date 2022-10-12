@@ -1,5 +1,5 @@
 import React, { useRef, FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button, Input } from 'antd'
 import MyTable from '@/components/common/table'
 import { isAuthorized, previewImg } from '@/assets/js/publicFunc'
@@ -8,15 +8,15 @@ import commom from '@/api'
 
 const UserList: FC = () => {
   const tableRef: RefType = useRef()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   // 添加
   const add = () => {
-    history.push('/user/add')
+    navigate('/user/add')
   }
   // 编辑
   const edit = () => {
-    history.push('/user/edit?id=666')
+    navigate('/user/edit?id=666')
   }
 
   // 新增按钮

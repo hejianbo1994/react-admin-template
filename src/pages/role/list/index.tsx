@@ -1,5 +1,5 @@
 import React, { useRef, FC } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import MyTable from '@/components/common/table'
 import { previewImg } from '@/assets/js/publicFunc'
 import common from '@/api'
@@ -55,4 +55,9 @@ const RoleList: FC = () => {
     </>
   )
 }
-export default withRouter(RoleList)
+const withLocation = (Component) => (props) => {
+  const location = useLocation()
+
+  return <Component {...props} location={location} />
+}
+export default withLocation(RoleList)

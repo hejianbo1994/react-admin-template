@@ -1,5 +1,4 @@
 import React, { useRef, FC } from 'react'
-import { useHistory } from 'react-router-dom'
 import { Button, Input } from 'antd'
 import MyTable from '@/components/common/table'
 import { isAuthorized, previewImg } from '@/assets/js/publicFunc'

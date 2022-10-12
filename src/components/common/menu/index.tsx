@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
-import { Link, useLocation, useHistory } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import type { MenuTheme } from 'antd'
 
@@ -23,8 +23,7 @@ const MenuView: FC = () => {
   const [theme, setTheme] = useState(
     window.localStorage.getItem('theme') as Theme
   )
-
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const userInfo = useAppSelector(selectUserInfo)
   const collapsed = useAppSelector(selectCollapsed)
@@ -91,7 +90,7 @@ const MenuView: FC = () => {
         key: data.key,
         icon: <data.icon />,
         onClick: () => {
-          history.push(data.path)
+          navigate(data.path)
         }
       }
     )

@@ -6,7 +6,7 @@ import React, {
   useCallback,
   Component
 } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Tabs, Alert, Dropdown, Menu } from 'antd'
 import Home from '@/pages/home'
 import { getKeyName, isAuthorized } from '@/assets/js/publicFunc'
@@ -68,7 +68,7 @@ const TabPanes: FC<Props> = (props) => {
 
   const { defaultActiveKey, panesItem, tabActiveKey } = props
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const { pathname, search } = useLocation()
 
   const fullPath = pathname + search
@@ -146,9 +146,9 @@ const TabPanes: FC<Props> = (props) => {
     // 如果当前tab关闭后，上一个tab无权限，就一起关掉
     if (!isAuthorized(tabKey) && nextPath !== '/') {
       remove(tabKey)
-      history.push(curTab[delIndex - 2])
+      navigate(curTab[delIndex - 2])
     } else {
-      history.push(nextPath)
+      navigate(nextPath)
     }
     setPanes(panes)
     storeTabs(panes)
@@ -163,7 +163,7 @@ const TabPanes: FC<Props> = (props) => {
     const { path } = panes.filter(
       (item: CommonObjectType) => item.key === targetKey
     )[0]
-    history.push({ pathname: path })
+    navigate({ pathname: path })
   }
 
   // 刷新当前 tab
@@ -182,7 +182,7 @@ const TabPanes: FC<Props> = (props) => {
   // 关闭其他或关闭所有
   const removeAll = async (isCloseAll?: boolean) => {
     const { path, key } = selectedPanel
-    history.push(isCloseAll ? '/' : path)
+    navigate(isCloseAll ? '/' : path)
 
     const homePanel = [
       {

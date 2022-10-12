@@ -1,18 +1,13 @@
 import React, { FC, useState, useEffect, useRef, Component } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import MenuView from '@/components/common/menu'
-import classNames from 'classnames'
 import { Layout, BackTop } from 'antd'
 import { getKeyName, isAuthorized } from '@/assets/js/publicFunc'
 import Header from '@/components/common/header'
 import TabPanes from '@/components/common/tabPanes'
 import { selectUserInfo } from '@/store/slicers/userSlice'
 import { useAppDispatch, useAppSelector } from '@/store/redux-hooks'
-import {
-  selectCollapsed,
-  selectMenuMode,
-  setCollapsed
-} from '@/store/slicers/appSlice'
+import { selectCollapsed } from '@/store/slicers/appSlice'
 import styles from './container.module.less'
 
 const noNewTab = ['/login'] // 不需要新建 tab的页面
@@ -49,7 +44,7 @@ const Home: FC = () => {
   })
   const pathRef: RefType = useRef<string>('')
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const { pathname, search } = useLocation()
 
   const { token, permission } = userInfo
@@ -57,7 +52,7 @@ const Home: FC = () => {
   useEffect(() => {
     // 未登录
     if (!token) {
-      history.replace({ pathname: '/login' })
+      navigate('/login', { replace: true })
       return
     }
 
@@ -85,7 +80,7 @@ const Home: FC = () => {
       })
       pathRef.current = errorUrl
       setTabActiveKey(errorKey)
-      history.replace(errorUrl)
+      navigate(errorUrl, { replace: true })
       return
     }
 
@@ -100,7 +95,7 @@ const Home: FC = () => {
       path: newPath
     })
     setTabActiveKey(tabKey)
-  }, [history, pathname, search, token, dispatch, permission, collapsed])
+  }, [pathname, search, token, dispatch, permission, collapsed])
 
   return (
     <Layout
