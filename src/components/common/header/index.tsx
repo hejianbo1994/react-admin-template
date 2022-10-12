@@ -66,7 +66,9 @@ const Header: FC = () => {
 
   const darkMedia = () => {
     const themeJs = document.getElementById('themeJs')
-    const themeStyle = document.getElementById('less:color')
+    const themeStyle =
+      document.getElementById('less:color') ||
+      document.getElementById('less:admin-color')
     if (themeJs) themeJs.remove()
     if (themeStyle) themeStyle.remove()
   }
