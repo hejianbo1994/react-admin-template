@@ -9,7 +9,9 @@
 /coverage
 
 # production
-/build
+/admin
+
+/src/assets/css/tailwindoutput.css
 
 # misc
 .DS_Store
