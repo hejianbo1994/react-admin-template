@@ -52,7 +52,12 @@ const Home: FC = () => {
   useEffect(() => {
     console.log(1211)
     // 未登录
-    if (!token) {
+    if (
+      !token ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
       navigate('/login', { replace: true })
       return
     }

@@ -14,11 +14,6 @@ import { copyTextToClipboard } from '@/assets/js/publicFunc'
 
 const { Option } = Select
 
-const isMobile =
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-
 const LoginForm: FC = () => {
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
@@ -27,7 +22,11 @@ const LoginForm: FC = () => {
   const selectedBusinessId = useRef('')
   const modal = useRef(null)
   useEffect(() => {
-    if (isMobile) {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
       setIsMobileModalOpen(true)
     }
     // 重置 tab栏为首页
