@@ -7,7 +7,7 @@ const App: FC = (props) => (
   <BrowserRouter basename="admin">
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Container {...props} />} />
+      <Route path="/*" element={<Container {...props} />} />
     </Routes>
   </BrowserRouter>
 )

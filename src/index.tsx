@@ -37,7 +37,6 @@ if (process.env.NODE_ENV === 'development') {
 
 const root = createRoot(document.getElementById('root')!)
 appReady.then(() => {
-  console.log('init')
   root.render(
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>

@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, useRef, Component } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, matchRoutes, useLocation } from 'react-router-dom'
 import MenuView from '@/components/common/menu'
 import { Layout, BackTop } from 'antd'
 import { getKeyName, isAuthorized } from '@/assets/js/publicFunc'
@@ -50,6 +50,7 @@ const Home: FC = () => {
   const { token, permission } = userInfo
 
   useEffect(() => {
+    console.log(1211)
     // 未登录
     if (!token) {
       navigate('/login', { replace: true })
