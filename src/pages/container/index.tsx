@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useRef, Component } from 'react'
 import { useNavigate, matchRoutes, useLocation } from 'react-router-dom'
-import MenuView from '@/components/common/menu'
 import { Layout, BackTop } from 'antd'
+import MenuView from '@/components/common/menu'
 import { getKeyName, isAuthorized } from '@/assets/js/publicFunc'
 import Header from '@/components/common/header'
 import TabPanes from '@/components/common/tabPanes'
@@ -50,7 +50,6 @@ const Home: FC = () => {
   const { token, permission } = userInfo
 
   useEffect(() => {
-    console.log(1211)
     // 未登录
     if (
       !token ||

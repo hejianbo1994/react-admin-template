@@ -7,13 +7,8 @@
   "prettier.semi": false,
   "prettier.singleQuote": false,
   "eslint.options": {
-    "extensions": [
-      ".js",
-      ".jsx"
-    ],
-    "plugins": [
-      "html",
-    ]
+    "extensions": [".js", ".jsx", ".ts", ".tsx"],
+    "plugins": ["html"]
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -22,7 +17,7 @@
   },
   // eslint end
   "[javascriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "emmet.includeLanguages": {
     "javascript": "javascriptreact"
@@ -31,6 +26,6 @@
   "git.autofetch": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  },
+  }
   // "editor.formatOnSave": true
 }

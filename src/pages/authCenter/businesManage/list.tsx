@@ -1,7 +1,5 @@
 import React, { useRef, useState, FC } from 'react'
 import { useLocation } from 'react-router-dom'
-import MyTable from '@/components/common/table'
-import Api from '@/api/authCenter/businessManage'
 import {
   Button,
   Input,
@@ -15,6 +13,8 @@ import {
 } from 'antd'
 import { FormOutlined, CloseOutlined } from '@ant-design/icons'
 import CryptoJs from 'crypto-js'
+import Api from '@/api/authCenter/businessManage'
+import MyTable from '@/components/common/table'
 
 const layout = {
   labelCol: { span: 8 },
@@ -44,8 +44,35 @@ const BusinessList: FC = () => {
   const [form] = Form.useForm()
   const [form2] = Form.useForm()
 
+  // 搜索栏配置项
+  const searchConfigList = [
+    {
+      key: 'businessId',
+      slot: <Input placeholder="businessId" allowClear />,
+      rules: [],
+      initialValue: ''
+    }
+    // {
+    //   key: 'gender',
+    //   slot: (
+    //     <MySelect
+    //       data={[
+    //         { name: 'male', key: 'male' },
+    //         { name: 'female', key: 'female' }
+    //       ]}
+    //       placeholder="gender"
+    //     />
+    //   )
+    // }
+  ]
+
   // 列表
   const columns = [
+    {
+      title: '商户id',
+      dataIndex: 'businessId',
+      align: 'center'
+    },
     {
       title: '商户名称',
       dataIndex: 'businessName',
@@ -128,6 +155,8 @@ const BusinessList: FC = () => {
     Api.businessPermission({
       businessId: record.businessId
     }).then((res) => {
+      setModalArgs({ type: 'edit', title: '编辑', open: true })
+      form.setFieldsValue(res)
       children.current = res.allPermission.map((permission) => (
         <Select.Option
           disabled={permission.hidden}
@@ -138,8 +167,6 @@ const BusinessList: FC = () => {
           {permission.name}
         </Select.Option>
       ))
-      form.setFieldsValue(res)
-      setModalArgs({ type: 'edit', title: '编辑', open: true })
     })
   }
 
@@ -150,6 +177,8 @@ const BusinessList: FC = () => {
       businessId: record.businessId,
       id: user._id
     }).then((res) => {
+      setModalArgs2({ type: 'edit', title: '编辑', open: true })
+      form2.setFieldsValue(res)
       children2.current = res.businessPermission.map((permission) => (
         <Select.Option
           key={permission.code}
@@ -159,8 +188,6 @@ const BusinessList: FC = () => {
           {permission.name}
         </Select.Option>
       ))
-      form2.setFieldsValue(res)
-      setModalArgs2({ type: 'edit', title: '编辑', open: true })
     })
   }
 
@@ -327,6 +354,7 @@ const BusinessList: FC = () => {
       <MyTable
         rowKey="_id"
         apiFun={Api.getBusinessUserList}
+        searchConfigList={searchConfigList}
         columns={columns}
         ref={tableRef}
         // extraProps={{ results: 10 }}
